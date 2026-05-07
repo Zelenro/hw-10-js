@@ -1,5 +1,7 @@
 import { fetchBreeds, fetchCatByBreed } from './cat-api';
 import SlimSelect from 'slim-select';
+import Notiflix from 'notiflix';
+
 import '../css/main.css';
 import '../css/slimselect.css';
 import '../css/loader.css';
@@ -9,6 +11,9 @@ const catInfoRef = document.querySelector('.cat-info');
 const loaderRef = document.querySelector('.loader');
 const errorRef = document.querySelector('.error');
 catInfoRef.classList.add('cat-card');
+
+errorRef.style.display = 'none';
+loaderRef.style.display = 'none';
 
 const slim = new SlimSelect({
   select: breedSelectRef,
@@ -43,10 +48,10 @@ const slim = new SlimSelect({
   },
 });
 
-errorRef.style.display = 'none';
-loaderRef.style.display = 'none';
-
-breedSelectRef.addEventListener('change', handleSelect);
+Notiflix.Notify.init({
+  position: 'right-top',
+  timeout: 4000,
+});
 
 function makeCatCard(catItem) {
   const imgCat = document.createElement('img');
@@ -70,9 +75,10 @@ function makeCatCard(catItem) {
   catInfoRef.append(imgCat, textWrapper);
 }
 
+breedSelectRef.addEventListener('change', handleSelect);
+
 function handleSelect(e) {
   e.preventDefault();
-
   loaderRef.style.display = 'block';
   errorRef.style.display = 'none';
   fetchCatByBreed(e.target.value)
@@ -82,7 +88,10 @@ function handleSelect(e) {
     })
     .catch(err => {
       console.log(err);
-      errorRef.style.display = 'block';
+      catInfoRef.innerHTML = '';
+      Notiflix.Notify.failure(
+        'Oops! Something went wrong! Try reloading the page!'
+      );
     })
     .finally(() => {
       loaderRef.style.display = 'none';
@@ -94,16 +103,18 @@ function injectSelect() {
   errorRef.style.display = 'none';
   fetchBreeds()
     .then(data => {
-      const dataInSlimSelect = data.map(el => ({
+      const slimData = data.map(el => ({
         text: el.name,
         value: el.id,
       }));
-      slim.setData(dataInSlimSelect);
+      slim.setData(slimData);
       errorRef.style.display = 'none';
     })
     .catch(err => {
       console.log('Error', err);
-      errorRef.style.display = 'block';
+      Notiflix.Notify.failure(
+        'Oops! Something went wrong! Try reloading the page!'
+      );
     })
     .finally(() => {
       loaderRef.style.display = 'none';

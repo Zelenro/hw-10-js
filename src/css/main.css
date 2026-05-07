@@ -1,0 +1,29 @@
+.cat-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 24px;
+    padding: 20px;
+    /* border: 1px solid #ccc; */
+    /* border-radius: 12px; */
+    /* max-width: 1000px; */
+    background: #fff;
+}
+
+.cat-card__info {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    /* min-width: 300px; */
+}
+
+.cat-card img {
+    border-radius: 12px;
+}
+
+
+
+.error {
+    display: none;
+    color: #c00;
+    margin-top: 16px;
+}
